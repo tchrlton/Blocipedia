@@ -12,15 +12,6 @@ module.exports = (sequelize, DataTypes) => {
     private: {
     	type: DataTypes.BOOLEAN,
     	allowNull: false
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      onDelete: "CASCADE",
-      references: {
-        model: "Users",
-        key: "id",
-        as: "userId",
-      }
     }
   }, {});
   Wiki.associate = function(models) {

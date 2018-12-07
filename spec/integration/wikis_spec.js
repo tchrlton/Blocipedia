@@ -1,8 +1,8 @@
 const request = require("request");
 const server = require("../../src/server");
 const base = "http://localhost:3000/wikis/";
-const Wiki = require("../../src/db/models").Wiki;
 const sequelize = require("../../src/db/models/index").sequelize;
+const Wiki = require("../../src/db/models").Wiki;
 
 describe("routes : wikis", () => {
    beforeEach((done) => {
@@ -49,6 +49,7 @@ describe("routes : wikis", () => {
        form: {
          title: "JS Frameworks",
          body: "There is a lot of them",
+         private: false
        }
      };
       it("should create a new wiki and redirect", (done) => {
@@ -59,6 +60,7 @@ describe("routes : wikis", () => {
              expect(res.statusCode).toBe(303);
              expect(wiki.title).toBe("JS Frameworks");
              expect(wiki.body).toBe("There is a lot of them");
+             expect(wiki.private).toBe(false);
              done();
            })
            .catch((err) => {

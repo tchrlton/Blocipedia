@@ -11,10 +11,7 @@ module.exports = {
     })
   },
   addWiki(newWiki, callback){
-    return Wiki.create({
-      title: newWiki.title,
-      body: newWiki.body
-    })
+    return Wiki.create(newWiki)
     .then((wiki) => {
       callback(null, wiki);
     })
