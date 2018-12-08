@@ -44,11 +44,13 @@ describe("routes : wikis", () => {
           username: "userbro94",
           email: "email@example.com",
           password: "123456",
+          role: 0
         })
         .then((user) => {
           request.get({
             url: "http://localhost:3000/auth/fake",
             form: {
+              role: user.role,
               userId: user.id,
               username: user.username,
               email: user.email
