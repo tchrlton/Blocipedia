@@ -3,26 +3,114 @@ const server = require("../../src/server");
 const base = "http://localhost:3000/wikis/";
 const sequelize = require("../../src/db/models/index").sequelize;
 const Wiki = require("../../src/db/models").Wiki;
+const User = require("../../src/db/models").User;
 
 describe("routes : wikis", () => {
-   beforeEach((done) => {
-    this.wiki;
-    sequelize.sync({force: true}).then((res) => {
-      Wiki.create({
-       title: "JS Frameworks",
-       body: "There is a lot of them",
-       private: false
-     })
-      .then((wiki) => {
-        this.wiki = wiki;
-        done();
-      })
-      .catch((err) => {
-        console.log(err);
-        done();
+  beforeEach((done) => {
+        this.user;
+        this.wiki;
+        sequelize.sync({force: true}).then((res) => {
+    
+          User.create({
+            email: "starman@tesla.com",
+            password: "Trekkie4lyfe"
+          })
+          .then((user) => {
+            this.user = user;
+
+            Wiki.create({
+                title: "JS Frameworks",
+                body: "There is a lot of them",
+                private: false,
+                userId: user.id
+            })
+            .then((wiki) => {
+                this.wiki = wiki;
+            })
+            .catch((err) => {
+                console.log(err);
+                done();
+            });
+    
+          });
+        });
+  });
+
+  describe("guest attempting to perform CRUD actions for Wikis", () => {
+
+    beforeEach((done) => { 
+      request.get({ 
+        url: "http://localhost:3000/auth/fake",
+        form: {
+          userId: 0
+        }
+      },
+        (err, res, body) => {
+          done();
+        }
+      );
+    });
+
+    describe("POST /wikis/create", () => {
+
+      it("should not create a new wiki and redirect", (done) => {
+        request.post(options,
+           (err, res, body) => {
+            Wiki.findOne({where: {title: "JS Frameworks"}})
+            .then((wiki) => {
+              expect(wiki.title).toBeNull();
+              done();
+            })
+            .catch((err) => {
+              console.log(err);
+              done();
+            });
+          }
+        );
       });
-     });
-   });
+    });
+
+    describe("POST wikis/:id/destroy", () => {
+
+      it("should not delete the wiki with the associated ID", (done) => {
+        Wiki.all()
+        .then((wikis) => {
+          const wikiCountBeforeDelete = wikis.length;
+
+          expect(wikiCountBeforeDelete).toBe(1);
+
+          request.post(
+            `${base}/wikis/${this.wiki.id}/destroy`,
+            (err, res, body) => {
+            Wiki.all()
+            .then((wikis) => {
+              expect(err).toBeNull();
+              expect(wikis.length).toBe(wikiCountBeforeDelete);
+              done();
+            })
+
+          });
+        })
+      });
+    });
+  });
+
+  describe("signed in user performing CRUD actions for Comment", () => {
+
+    beforeEach((done) => {
+      request.get({     
+        url: "http://localhost:3000/auth/fake",
+        form: {
+          role: "member",  
+          userId: user.id
+        }
+      },
+        (err, res, body) => {
+          done();
+        }
+      );
+    });
+
    describe("GET /wikis", () => {
      it("should return a status code 200 and all wikis", (done) => {
        request.get(base, (err, res, body) => {
@@ -49,7 +137,8 @@ describe("routes : wikis", () => {
        form: {
          title: "JS Frameworks",
          body: "There is a lot of them",
-         private: false
+         private: false,
+         userId: this.user.id
        }
      };
       it("should create a new wiki and redirect", (done) => {
@@ -129,4 +218,5 @@ describe("routes : wikis", () => {
          });
      });
     });
+  });
 });
