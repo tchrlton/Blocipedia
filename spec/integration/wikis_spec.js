@@ -11,13 +11,6 @@ describe("routes : wikis", () => {
         this.wiki;
         sequelize.sync({force: true}).then((res) => {
     
-          User.create({
-            email: "starman@tesla.com",
-            password: "Trekkie4lyfe"
-          })
-          .then((user) => {
-            this.user = user;
-
             Wiki.create({
                 title: "JS Frameworks",
                 body: "There is a lot of them",
@@ -95,13 +88,20 @@ describe("routes : wikis", () => {
     });
   });
 
-  describe("signed in user performing CRUD actions for Comment", () => {
+  describe("signed in user performing CRUD actions for wiki", () => {
 
     beforeEach((done) => {
+
+      User.create({
+        email: "starman@tesla.com",
+        password: "Trekkie4lyfe"
+      })
+      .then((user) => {
+        this.user = user;
+
       request.get({     
         url: "http://localhost:3000/auth/fake",
-        form: {
-          role: "member",  
+        form: {  
           userId: user.id
         }
       },
