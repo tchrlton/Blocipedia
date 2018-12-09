@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/tchrlton/Blocipedia#readme",
   "devDependencies": {
+    "faker": "^4.1.0",
     "jasmine": "^3.3.0",
     "request": "^2.83.0"
   },
