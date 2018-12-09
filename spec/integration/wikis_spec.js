@@ -91,7 +91,7 @@ describe("routes : wikis", () => {
           form: {
             title: "JS Frameworks",
             body: "There are a lot of them",
-            private: false
+            private: false,
           }
         };
 
