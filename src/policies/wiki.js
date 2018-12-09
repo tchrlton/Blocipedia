@@ -13,11 +13,11 @@ module.exports = class WikiPolicy {
     }
     
     _isPremium() {
-        return this.user && (this.user.role === 1);
+        return this.user && (this.user.role === "premium");
     }
   
     _isAdmin() {
-        return this.user && (this.user.role === 2);
+        return this.user && (this.user.role === "admin");
     }
 
     _isPublic() {

@@ -107,7 +107,7 @@ describe("routes : users", () => {
        User.create({
          email: "starman@tesla.com",
          password: "Trekkie4lyfe",
-         role: 0
+         role: "standard"
        })
       .then( (res) => {
         this.user = res;

@@ -44,7 +44,7 @@ describe("routes : wikis", () => {
           username: "userbro94",
           email: "email@example.com",
           password: "123456",
-          role: 0
+          role: "standard"
         })
         .then((user) => {
           request.get({
