@@ -43,5 +43,24 @@ module.exports = {
     req.logout();
     req.flash("notice", "You've successfully signed out!");
     res.redirect("/");
-  }
+  },
+  show(req, res, next) {
+    userQueries.getUser(req.params.id, (err, user) => {
+        if(err || user === undefined){
+            req.flash("notice", "No user found with that ID.");
+            res.redirect("/");
+        } else {
+            res.render("users/show", {user});
+        }
+    });
+  },
+  upgradeForm(req, res, next){
+    userQueries.getUser(req.params.id, (err, user) => {
+      if(err || user == null){
+        res.redirect(404, "/");
+      } else {
+        res.render("users/show", {user});
+      }
+    });
+  },  
 }
