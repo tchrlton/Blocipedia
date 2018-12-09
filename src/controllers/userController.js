@@ -1,5 +1,6 @@
 const userQueries = require("../db/queries.users.js");
 const passport = require("passport");
+const stripe = require("stripe")('pk_test_bpjy258CFg8ehf4AHIv4dSpS');
 
 module.exports = {
   signUp(req, res, next){
@@ -48,6 +49,7 @@ module.exports = {
     userQueries.getUser(req.params.id, (err, user) => {
         if(err || user === undefined){
           console.log(err);
+          console.log(user);
             req.flash("notice", "No user found with that ID.");
             res.redirect("/");
         } else {
@@ -60,8 +62,38 @@ module.exports = {
       if(err || user == null){
         res.redirect(404, "/");
       } else {
-        res.render("users/show", {user});
+        res.render("users/upgrade", {user});
       }
     });
-  },  
+  },
+  upgrade(req, res, next){
+    const token = req.body.stripeToken;
+    const email = req.body.stripeEmail;
+    User.findOne({
+        where: {email: email}
+    })
+    .then((user) => {
+        if(user){
+            const charge = stripe.charges.create({
+                amount: 15,
+                currency: 'usd',
+                description: 'Upgrade to premium',
+                source: token,
+            })
+            .then((result) => {
+                if(result){
+                    userQueries.upgradeUser(user);
+                    req.flash("notice", "Upgrade successful!");
+                    res.redirect("/wikis");
+                } else {
+                    req.flash("notice", "Upgrade unsuccessful.");
+                    res.redirect("users/show", {user});
+                }
+            })
+        } else {
+            req.flash("notice", "Upgrade unsuccessful.");
+            res.redirect("users/upgrade");
+        }
+    })
+  }  
 }

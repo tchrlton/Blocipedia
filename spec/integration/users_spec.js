@@ -125,4 +125,34 @@ describe("routes : users", () => {
 
   });
 
+  describe("POST /users/upgrade", () => {
+    
+    beforeEach((done) => {
+      this.user;
+      User.create({
+        email: "starman@tesla.com",
+        password: "Trekkie4lyfe",
+        role:"standard"
+      })
+     .then( (res) => {
+       this.user = res;
+       done();
+     });
+    });
+
+    it("should upgrade the user to premium membership", (done) => {
+        request.post(`${base}${this.user.id}/upgrade`, (err, res, body) => {
+          expect(err).toBeNull();
+          User.findOne({
+            where: { id: this.user.id }
+          })
+          .then((user) => {
+            expect(user.role).toBe("premium");
+            done();
+          });
+        });
+    });
+
+  });
+
 });

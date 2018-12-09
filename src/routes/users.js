@@ -12,5 +12,6 @@ router.post("/users", validation.validateUsers, userController.create);
 router.get("/users/:id", userController.show);
 
 router.get("/users/:id/upgrade", userController.upgradeForm);
+router.post("/users/:id/upgrade", userController.upgrade);
 
 module.exports = router;
