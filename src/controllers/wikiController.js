@@ -51,13 +51,19 @@ module.exports = {
         req.flash("notice", "You are not authorized to do that.");
         res.redirect("/wikis");
        }
-     },
+    },
     show(req, res, next){
+      console.log("Getting wiki " + req.params.id + "...");
       wikiQueries.getWiki(req.params.id, (err, wiki) => {
         if(err || wiki == null){
           console.log(err);
           res.redirect(404, "/");
         } else {
+          console.log("Found wiki " + wiki.title);
+          wiki.title = markdown.toHTML(wiki.title);
+          wiki.body = markdown.toHTML(wiki.body);
+          console.log("Rendering the show view...");
+          res.render("wikis/show", {wiki});
           let collabUsernames = [];
           wiki.collaborators.forEach((collaborator) => {
             userQueries.getUser(collaborator.userId, (err, user) => {
@@ -67,9 +73,6 @@ module.exports = {
               } else {
                 collabUsernames.push(user.username);
               }
-              wiki.title = markdown.toHTML(wiki.title);
-              wiki.body = markdown.toHTML(wiki.body);
-            res.render("wikis/show", {wiki, collabUsernames});
            });
           })
         }
@@ -97,10 +100,21 @@ module.exports = {
               const authorized = new Authorizer(req.user, wiki).edit();
               if(authorized || collaborators.length > 0){
                 res.render("wikis/edit", {wiki});
+                let collabUsernames = [];
+                wiki.collaborators.forEach((collaborator) => {
+                  userQueries.getUser(collaborator.userId, (err, user) => {
+                    if(err){
+                     console.log(err);
+                     return;
+                    } else {
+                      collabUsernames.push(user.username);
+                    }
+                  })
+                })
               } else {
                 req.flash("You are not authorized to do that.");
                 res.redirect(`/wikis/${req.params.id}`);   
-              }
+              } 
             }
           });
          }

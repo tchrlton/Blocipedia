@@ -16,7 +16,7 @@ module.exports = {
           collaboratorId = user[0].id;
 
           collaboratorQueries.getCollaborator(collaboratorId, req, (err, collaborator) => {
-            if(collaborator.length>0){
+            if(collaborator.length > 0){
               req.flash("user is already marked as collaborator");
             } else {
 
@@ -55,7 +55,7 @@ module.exports = {
             if(err){
               req.flash("error", err);
             } else {
-              req.flash("notice", "You've added ", collaboratorUsername, " as a collaborator on this wiki.");
+              req.flash("notice", "You've removed ", collaboratorUsername, " as a collaborator on this wiki.");
               res.redirect("/");          
             }
           });

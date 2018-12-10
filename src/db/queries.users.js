@@ -37,6 +37,17 @@ module.exports = {
       callback(err);
     })
   },
+  getUserByUsername(userUsername, callback){
+    return User.findAll({
+      where: {username: userUsername}
+    })
+    .then((user) => {
+      callback(null, user);
+    })
+    .catch((err) => {
+      callback(err);
+    })
+  },
   upgradeUser(id, callback){
     return User.findById(id)
     .then((user) => {
