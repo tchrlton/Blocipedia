@@ -155,4 +155,34 @@ describe("routes : users", () => {
 
   });
 
+  describe("POST /users/downgrade", () => {
+    
+    beforeEach((done) => {
+      this.user;
+      User.create({
+        email: "starman@tesla.com",
+        password: "Trekkie4lyfe",
+        role: "premium"
+      })
+     .then( (res) => {
+       this.user = res;
+       done();
+     });
+    });
+
+    it("should downgrade the user to standard membership", (done) => {
+        request.post(`${base}${this.user.id}/downgrade`, (err, res, body) => {
+          expect(err).toBeNull();
+          User.findOne({
+            where: { id: this.user.id }
+          })
+          .then((user) => {
+            expect(user.role).toBe("standard");
+            done();
+          });
+        });
+    });
+
+  });
+
 });
