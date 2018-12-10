@@ -26,6 +26,21 @@
                   <option value="true">Private</option>
               </select>
           </div>
+          <br>
+          Wiki Collaborators: 
+          <% collabUsername.forEach((collabUsername) => { %>
+              <li class="list-group-item">
+                <%= collabUsername %>
+              </li>
+          <% }) %>      
+          <br>
+          <form action="/wikis/<%= wiki.id %>/collaborator/add" method="post">
+            Add Collaborator with Username: <input type="text" name="username" class="form-control"> <input type="submit" value="Add" class="btn btn-primary"/>
+          </form> 
+        <br>
+          <form action="/wikis/<%= wiki.id %>/collaborator/remove" method="post">
+            Remove Collaborator with Username: <input type="text" name="username" class="form-control"> <input type="submit" value="Remove" class="btn btn-primary"/>
+          </form> 
         <% } %>
 
         <button type="submit" class="btn btn-primary">Update</button>
