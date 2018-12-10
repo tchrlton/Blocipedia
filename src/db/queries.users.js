@@ -38,7 +38,7 @@ module.exports = {
     })
   },
   upgradeUser(req, callback){
-    return User.findById(id)
+    return User.findById(req.params.id)
     .then((user) => {
       if(!user){
         callback(404);
@@ -59,7 +59,7 @@ module.exports = {
     });
   },
   downgradeUser(req, callback){
-    return User.findById(id)
+    return User.findById(req.params.id)
     .then((user) => {
       if(!user){
         callback(404);

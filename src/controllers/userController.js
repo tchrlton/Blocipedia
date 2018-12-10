@@ -83,7 +83,7 @@ module.exports = {
             })
             .then((result) => {
                 if(result){
-                    userQueries.upgradeUser(id);
+                    userQueries.upgradeUser(req.params.id);
                     req.flash("notice", "Upgrade successful!");
                     res.redirect("users/show");
                 } else {
@@ -113,7 +113,7 @@ module.exports = {
     })
     .then((user) => {
         if(user){
-            userQueries.downgradeUser(id);
+            userQueries.downgradeUser(req.params.id);
             req.flash("notice", "Your downgrade was successful.");
             res.redirect("users/show");
         } else {
