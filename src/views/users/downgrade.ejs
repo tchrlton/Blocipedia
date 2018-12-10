@@ -8,12 +8,12 @@
     <main class="container">
         <% include ../static/partials/messages.ejs %>
         <h1>Hello
-            <%= user.name %>!
+            <%= user.username %>!
         </h1>
         <h3>Your account is currently set to:
             <%= user.role %>
         </h3>
-        <p>Need to downgrade?</p>
+        <p>Downgrade Membership:</p>
         <form action="/users/<%= user.id %>/downgrade" method="POST">
             <button type="Submit" class="btn btn-warning">Confirm account downgrade</button>
         </form>

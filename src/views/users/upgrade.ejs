@@ -8,19 +8,19 @@
     <main class="container">
         <% include ../static/partials/messages.ejs %>
         <h1>Hey
-            <%= user.name %>!
+            <%= user.username %>!
         </h1>
         <h3>Your account is currently set to: 
             <%= user.role %>
         </h3>
-        <p>Ready to upgrade?</p>        
+        <p>Upgrade Membership:</p>        
         <form action="/users/<%= user.id %>/upgrade" method="POST">
           <script
             src="https://checkout.stripe.com/checkout.js" class="stripe-button"
             data-key="pk_test_bpjy258CFg8ehf4AHIv4dSpS"
             data-amount="1500"
             data-name="Blocipedia"
-            data-description="Example charge"
+            data-description="Premium account"
             data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
             data-locale="auto"
             data-zip-code="true"

@@ -1,6 +1,7 @@
 const userQueries = require("../db/queries.users.js");
 const passport = require("passport");
-const stripe = require("stripe")('pk_test_bpjy258CFg8ehf4AHIv4dSpS');
+const stripe = require("stripe")('sk_test_tTOsjTCfr3TqsvyF8Lt9H0ZJ');
+const User = require("../db/models").User;
 
 module.exports = {
   signUp(req, res, next){
@@ -75,16 +76,16 @@ module.exports = {
     .then((user) => {
         if(user){
             const charge = stripe.charges.create({
-                amount: 15,
+                amount: 1500,
                 currency: 'usd',
                 description: 'Upgrade to premium',
                 source: token,
             })
             .then((result) => {
                 if(result){
-                    userQueries.upgradeUser(user);
+                    userQueries.upgradeUser(id);
                     req.flash("notice", "Upgrade successful!");
-                    res.redirect("/wikis");
+                    res.redirect("users/show");
                 } else {
                     req.flash("notice", "Upgrade unsuccessful.");
                     res.redirect("users/show", {user});
@@ -95,5 +96,30 @@ module.exports = {
             res.redirect("users/upgrade");
         }
     })
-  }  
+  },
+  showDowngradePage(req, res, next){
+    userQueries.getUser(req.params.id, (err, user) => {
+        if(err || user === undefined){
+            req.flash("notice", "No user found with that ID.");
+            res.redirect("/");
+        } else {
+            res.render("users/downgrade", {user});
+        }
+    });
+  },
+  downgrade(req, res, next){
+    User.findOne({
+        where: {id: req.params.id}
+    })
+    .then((user) => {
+        if(user){
+            userQueries.downgradeUser(id);
+            req.flash("notice", "Your downgrade was successful.");
+            res.redirect("users/show");
+        } else {
+            req.flash("notice", "Downgrade unsuccessful.");
+            res.redirect("users/show", {user});
+        }
+    })
+  }
 }

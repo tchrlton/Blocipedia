@@ -37,7 +37,7 @@ module.exports = {
       callback(err);
     })
   },
-  upgradeUser(id, callback){
+  upgradeUser(req, callback){
     return User.findById(id)
     .then((user) => {
       if(!user){
@@ -45,6 +45,27 @@ module.exports = {
       } else {
         user.update({
           role: "premium"
+           }, {
+          where: {
+           id: user.id
+          }
+        })
+        callback(null, user);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      callback(err);
+    });
+  },
+  downgradeUser(req, callback){
+    return User.findById(id)
+    .then((user) => {
+      if(!user){
+        callback(404);
+      } else {
+        user.update({
+          role: "standard"
            }, {
           where: {
            id: user.id
