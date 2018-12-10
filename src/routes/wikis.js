@@ -11,4 +11,7 @@ router.get("/wikis/:id/edit", helper.ensureAuthenticated, wikiController.edit);
 router.post("/wikis/:id/update", wikiController.update);
 router.get("/wikis/:id", wikiController.show);
 
+router.get("/wikis/:id/makePrivateForm", wikiController.makePrivateForm);
+router.post("/wikis/:id/makePrivate", wikiController.makePrivate);
+
 module.exports = router;

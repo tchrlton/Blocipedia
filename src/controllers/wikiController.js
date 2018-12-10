@@ -22,27 +22,26 @@ module.exports = {
       }
     },
     create(req, res, next){
-      const authorized = new Authorizer(req.user).create();
-
-      if(authorized) {
-          let newWiki = {
-            title: req.body.title,
-            body: req.body.body,
-            private: req.body.private,
-            userId: req.user.id
-          };
-          wikiQueries.addWiki(newWiki, (err, wiki) => {
-            if(err){
-              res.redirect(500, "wikis/new");
-            } else {
-              res.redirect(303, `/wikis/${wiki.id}`);
-            }
-          });
-        } else {
-          req.flash("notice", "You are not authorized to do that.");
-          res.redirect("/wikis");
-        }
-    },
+      let newWiki = {
+        title: req.body.title,
+        body: req.body.body,
+        private: req.body.private || false,
+        userId: req.user.id
+      };
+      const authorized = new Authorizer(req.user, newWiki).create();
+      if(authorized){
+         wikiQueries.addWiki(newWiki, (err, wiki) => {
+           if(err){
+             res.redirect(500, "wikis/new");
+           } else {
+             res.redirect(303, `/wikis/${wiki.id}`);
+           }
+         });
+       } else {
+        req.flash("notice", "You are not authorized to do that.");
+        res.redirect("/wikis");
+       }
+     },
     show(req, res, next){
      wikiQueries.getWiki(req.params.id, (err, wiki) => {
        if(err || wiki == null){
@@ -86,6 +85,24 @@ module.exports = {
          res.redirect(`/wikis/${wiki.id}`);
        }
      });
+   },
+   makePrivateForm(req, res, next){
+    userQueries.getWiki(req.params.id, (err, wiki) => {
+      if(err || wiki == null){
+        res.redirect(404, "/");
+      } else {
+        res.render("wikis/show", {wiki});
+      }
+    });
+   },
+   makePrivate(req, res, next){
+    wikiQueries.makePrivateWiki(req, (err, wiki) => {
+      if(err || wiki == null){
+        res.redirect(404, `/wikis/${req.params.id}`);
+      } else {
+        res.redirect(`/wikis/${req.params.id}`);
+      }
+    });
    }
 
 }

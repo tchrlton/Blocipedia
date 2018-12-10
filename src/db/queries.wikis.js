@@ -71,5 +71,56 @@ module.exports = {
         callback("Forbidden");
       }
     });
+  },
+  makePrivateWiki(req, callback){
+    return Wiki.findById(req.params.id)
+    .then((wiki) => {
+      if(!wiki){
+       return callback("wiki not found");
+      }
+      const authorized = new Authorizer(req.user, wiki).makePrivate();
+      if(authorized) {
+        wiki.update({
+         private: true
+        }, {
+         where: {
+           id: wiki.id
+         }
+        })
+        .then(() => {
+          callback(null, wiki);
+        })
+        .catch((err) => {
+         callback(err);
+        });    
+      } else {
+        req.flash("notice", "You are not authorized to do that.")
+        callback(401);
+      }
+    });
+  },
+  downgradeWikis(id, callback){
+   return Wiki.findAll({
+     where: {
+       userId: id
+     }
+   })
+   .then((wikis) => {
+     wikis.forEach((wiki) => {
+       wiki.update({
+         private: false
+       }, {
+         where: {
+           private: true
+         }
+       })
+       .then(() => {
+         callback(null, wikis);
+       })
+       .catch((err) => {
+         callback(err);
+       })
+     })
+   })
   }
 }

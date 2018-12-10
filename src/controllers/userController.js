@@ -1,6 +1,7 @@
 const userQueries = require("../db/queries.users.js");
+const wikiQueries = require("../db/queries.wikis.js");
 const passport = require("passport");
-const stripe = require("stripe")('pk_test_bpjy258CFg8ehf4AHIv4dSpS');
+const stripe = require("stripe")('sk_test_tTOsjTCfr3TqsvyF8Lt9H0ZJ');
 const User = require("../db/models").User;
 
 module.exports = {
@@ -107,5 +108,14 @@ module.exports = {
         res.redirect("/");
       }
     });
+    wikiQueries.downgradeWikis(req.params.id, (err, user) => {
+     if(err){
+       req.flash("error", err);
+       res.redirect("/");
+     } else {
+       req.flash("notice", "Your private wikis are now public.");
+       res.redirect("/");
+     }
+    })
   }
 }
