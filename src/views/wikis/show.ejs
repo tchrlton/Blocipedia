@@ -6,9 +6,9 @@
   <body>
     <% include ../static/partials/navbar.ejs %>
      <main class="container">
-      <h1><%= wiki.title %></h1>
+      <h1><%- wiki.title %></h1>
 
-      <p><%= wiki.body %></p>
+      <p><%- wiki.body %></p>
 
       <% if(currentUser) { %>
         <a href="/wikis/<%= wiki.id %>/edit" class="btn btn-warning">Edit</a>
