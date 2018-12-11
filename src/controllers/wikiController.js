@@ -52,30 +52,21 @@ module.exports = {
         res.redirect("/wikis");
        }
     },
-    show(req, res, next){
-      console.log("Getting wiki " + req.params.id + "...");
-      wikiQueries.getWiki(req.params.id, (err, wiki) => {
-        if(err || wiki == null){
-          console.log(err);
-          res.redirect(404, "/");
-        } else {
-          console.log("Found wiki " + wiki.title);
-          wiki.title = markdown.toHTML(wiki.title);
-          wiki.body = markdown.toHTML(wiki.body);
-          console.log("Rendering the show view...");
-          res.render("wikis/show", {wiki});
-          let collabUsernames = [];
-          wiki.collaborators.forEach((collaborator) => {
-            userQueries.getUser(collaborator.userId, (err, user) => {
-              if(err){
-               console.log(err);
-               return;
-              } else {
-                collabUsernames.push(user.username);
-              }
-           });
-          })
-        }
+    show(req, res, next) {
+      wikiQueries.getWikis(req.params.id, (err, result) => {
+          wiki = result["wiki"];
+          collaborators = result["collaborators"];
+
+          if (err || result.wiki == null) {
+              console.log(err);
+              res.redirect(404, "/");
+          } else {
+              wiki.title = markdown.toHTML(wiki.title);
+              wiki.body = markdown.toHTML(wiki.body);
+              res.render("wikis/show", {
+                  wiki
+              });
+          }
       });
     },
     destroy(req, res, next){
@@ -93,7 +84,7 @@ module.exports = {
        if(err || collaborators == null){
          console.log(err);
        } else {
-           wikiQueries.getWiki(req.params.id, (err, wiki) => {
+           wikiQueries.getWikis(req.params.id, (err, wiki) => {
             if(err || wiki == null){
               res.redirect(404, "/");
             } else {
@@ -133,7 +124,7 @@ module.exports = {
       });
     },
     makePrivateForm(req, res, next){
-     userQueries.getWiki(req.params.id, (err, wiki) => {
+     userQueries.getWikis(req.params.id, (err, wiki) => {
       if(err || wiki == null){
         res.redirect(404, "/");
       } else {
