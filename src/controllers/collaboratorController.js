@@ -1,69 +1,54 @@
-const collaboratorQueries = require("../db/queries.collaborators.js");
-const userQueries = require("../db/queries.users.js");
+const collaboratorQueries = require("../db/queries.collaborators");
+const User = require("../db/models").User;
+const Wiki = require("../db/models").Wiki;
+const Authorizer = require("../policies/wiki");
+const wikiQueries = require("../db/queries.wikis");
 
 module.exports = {
 
-  add(req, res, next){
-    if(req.user){
-      let collaboratorUsername = req.body.username;
-      let collaboratorId;
-      userQueries.getUserByUsername(collaboratorUsername, (err, user) => {
-        if(err){
-          console.log(err);
-          req.flash("error", err);
-          res.redirect("/");
-        } else {
-          collaboratorId = user[0].id;
+    show(req, res, next){
+        wikiQueries.getWiki(req.params.wikiId, (err, result) => {
+            wiki = result["wiki"];
+            collaborators = result["collaborators"];
 
-          collaboratorQueries.getCollaborator(collaboratorId, req, (err, collaborator) => {
-            if(collaborator.length > 0){
-              req.flash("user is already marked as collaborator");
+            if (err || result.wiki == null) {
+                res.redirect(404, "/");
             } else {
-
-              collaboratorQueries.addCollaborator(collaboratorId, req, (err, collaborator) => {
-                if(err){
-                  req.flash("error", err);
+                const authorized = new Authorizer(req.user, wiki, collaborators).edit();
+                if (authorized) {
+                    res.render("collaborators/show", {
+                        wiki,
+                        collaborators
+                    });
                 } else {
-                  req.flash("notice", "You've added ", collaboratorUsername, " as a collaborator on this wiki.");
-                  res.redirect("/");          
+                    req.flash("notice", "You are not authorized to do that!");
+                    res.redirect(`/wikis/${req.params.wikiId}`);
                 }
-              });
-
             }
-          })          
+        });
+    },
 
-        }
-      });
+    create(req, res, next){
+        collaboratorQueries.createCollaborator(req, (err, collaborator) => {
+            if (err) {
+                req.flash("notice", "User already exists.");
+            }
+            res.redirect(`/wikis/${req.params.wikiId}`);
+        });
+    },
 
-    } else {
-      req.flash("notice", "You must be signed in to do that.")
-    }
-  },
-
-  remove(req, res, next){
-    if(req.user){
-      let collaboratorUsername = req.body.username;
-      let collaboratorId;
-      userQueries.getUserByUsername(collaboratorUsername, (err, user) => {
-        if(err){
-          console.log(err);
-          req.flash("error", err);
-          res.redirect("/");
+    delete(req, res, next){
+        if (req.user) {
+            collaboratorQueries.deleteCollaborator(req, (err, collaborator) => {
+                if (err) {
+                    req.flash("error", err);
+                }
+                res.redirect(req.headers.referer);
+            });
         } else {
-          collaboratorId = user[0].id;
-          collaboratorQueries.removeCollaborator(collaboratorId, req, (err, collaborator) => {
-            if(err){
-              req.flash("error", err);
-            } else {
-              req.flash("notice", "You've removed ", collaboratorUsername, " as a collaborator on this wiki.");
-              res.redirect("/");          
-            }
-          });
+            req.flash("notice", "You must be signed in to do that!");
+            res.redirect(req.headers.referer);
         }
-      });
+    },
 
-    } else {
-      req.flash("notice", "You must be signed in to do that.")
-    }
-  }
 }

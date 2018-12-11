@@ -100,17 +100,6 @@ module.exports = {
               const authorized = new Authorizer(req.user, wiki).edit();
               if(authorized || collaborators.length > 0){
                 res.render("wikis/edit", {wiki});
-                let collabUsernames = [];
-                wiki.collaborators.forEach((collaborator) => {
-                  userQueries.getUser(collaborator.userId, (err, user) => {
-                    if(err){
-                     console.log(err);
-                     return;
-                    } else {
-                      collabUsernames.push(user.username);
-                    }
-                  })
-                })
               } else {
                 req.flash("You are not authorized to do that.");
                 res.redirect(`/wikis/${req.params.id}`);   

@@ -26,10 +26,10 @@
               </select>
           </div>
 
-          <form action="/wikis/<%= wiki.id %>/collaborator/add" method="post">
+          <form action="/wikis/<%= wiki.id %>/collaborators/create" method="post">
             Add Collaborator with Username: <input type="text" name="username" class="form-control"> <input type="submit" value="Add" class="btn btn-primary"/>
           </form> 
-          <form action="/wikis/<%= wiki.id %>/collaborator/remove" method="post">
+          <form action="/wikis/<%= wiki.id %>/collaborators/delete" method="post">
             Remove Collaborator with Username: <input type="text" name="username" class="form-control"> <input type="submit" value="Remove" class="btn btn-primary"/>
           </form> 
         <% } %>

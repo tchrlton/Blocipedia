@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-
 const collaboratorController = require("../controllers/collaboratorController");
+const User = require("../../src/db/models").User;
 
-router.post("/wikis/:wikiId/collaborator/add", collaboratorController.add);
-
-router.post("/wikis/:wikiId/collaborator/remove", collaboratorController.remove);
+router.get("/wikis/:wikiId/collaborators", collaboratorController.show);
+router.post("/wikis/:wikiId/collaborators/create", collaboratorController.create);
+router.post("/wikis/:wikiId/collaborators/delete", collaboratorController.delete);
 
 module.exports = router;
