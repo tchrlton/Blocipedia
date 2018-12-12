@@ -7,17 +7,17 @@
     <% include ../static/partials/navbar.ejs %>
      <main class="container">
        <h1>Edit Wiki</h1>
-      <form action="/wikis/<%= wiki.id %>/update" method="post">
+      <form action="/wikis/<%= wiki.wiki.id %>/update" method="post">
         <div class="form-group">
           <label for="title">Wiki Title</label>
-          <input value="<%= wiki.title %>" type="text" class="form-control" name="title" aria-describedby="titleHelp" placeholder="Enter Title">
+          <input value="<%= wiki.wiki.title %>" type="text" class="form-control" name="title" aria-describedby="titleHelp" placeholder="Enter Title">
         </div>
         <div class="form-group">
           <label for="body">Body</label>
-          <textarea rows="4" class="form-control" name="body" placeholder="Enter Body"><%= wiki.body %></textarea>
+          <textarea rows="4" class="form-control" name="body" placeholder="Enter Body"><%= wiki.wiki.body %></textarea>
         </div>
 
-        <% if(currentUser && (currentUser.role === "premium" || currentUser.role === "admin") && wiki.userId === currentUser.id) { %>
+        <% if(currentUser && (currentUser.role === "premium" || currentUser.role === "admin") && wiki.wiki.userId === currentUser.id) { %>
           <div class="form-group">
               <label for="private">Wiki Status</label>
               <select class="form-control" name="private">
@@ -26,8 +26,6 @@
               </select>
           </div>
         <% } %>
-
-        <% include ../collaborators/edit.ejs %>
 
 
         <button type="submit" class="btn btn-primary">Update</button>

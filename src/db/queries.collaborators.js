@@ -10,7 +10,7 @@ module.exports = {
         if (req.user.username == req.body.collaborator){
             return callback("You cannot add yourself as a collaborator.");
         }
-        User.findAll({
+        User.findOne({
             where: {
                 username: req.body.collaborator
             }
@@ -19,7 +19,7 @@ module.exports = {
             if(!users[0]){
                 return callback("User does not exist.");
             }
-            Collaborator.findAll({
+            Collaborator.findOne({
                 where: {
                     userId: users[0].id,
                     wikiId: req.params.wikiId,

@@ -55,7 +55,9 @@ module.exports = {
     show(req, res, next) {
       wikiQueries.getWikis(req.params.id, (err, result) => {
           wiki = result["wiki"];
+          console.log(wiki);
           collaborators = result["collaborators"];
+          console.log(result);
 
           if (err || result.wiki == null) {
               console.log(err);
@@ -64,7 +66,7 @@ module.exports = {
               wiki.title = markdown.toHTML(wiki.title);
               wiki.body = markdown.toHTML(wiki.body);
               res.render("wikis/show", {
-                  wiki
+                  wiki: wiki.dataValues
               });
           }
       });
@@ -90,8 +92,10 @@ module.exports = {
             } else {
               const authorized = new Authorizer(req.user, wiki).edit();
               if(authorized || collaborators.length > 0){
+                console.log("Done! Rendering wiki.");
                 res.render("wikis/edit", {wiki});
               } else {
+                console.log("Failed to edit wiki, user is not authorized.");
                 req.flash("You are not authorized to do that.");
                 res.redirect(`/wikis/${req.params.id}`);   
               } 

@@ -42,7 +42,7 @@ module.exports = class WikiPolicy {
   }
 
   edit() {
-    return this._isPublic() || this._isOwner() || this._isAdmin();
+    return this._isPublic() || this._isOwner() || this._isAdmin() || this._isPremium();
   }
 
   update() {

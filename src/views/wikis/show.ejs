@@ -17,6 +17,10 @@
         </form>
       <% } %>
 
+      <% if(wiki.private) { %>
+        <a href="/wikis/<%= wiki.id %>/collaborators" class="btn btn-info">Edit Collaborators</a>
+      <% } %>
+
     </main>
      <% include ../static/partials/baseScripts.ejs %>
    </body>

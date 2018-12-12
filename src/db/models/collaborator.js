@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     Collaborator.addScope('collaboratorsFor', (wikiId) => {
       return {
         include: [{
-          model: models.User
+          model: models.Wiki
         }],
         where: {
           wikiId: wikiId
@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
     Collaborator.addScope("userCollaborationsFor", (userId) => {
       return {
         include: [{
-          model: models.Wiki
+          model: models.User
         }],
         where: {
           userId: userId

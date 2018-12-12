@@ -22,14 +22,14 @@ module.exports = {
                     });
                 } else {
                     req.flash("notice", "You are not authorized to do that");
-                    res.redirect(`/wikis/${req.params.wikiId}`)
+                    res.redirect(`/wikis/${req.params.wikiId}`);
                 }
             }
         });
     },
 
     collaborators(req, res, next){
-        User.findOne({where: {email: req.body.email}})
+        User.findOne({where: {username: req.body.username}})
         .then(user => {
           if (user) {
           let collaborator = Collaborator.build({
@@ -39,15 +39,15 @@ module.exports = {
         
             collaborator.save();
         
-            req.flash("notice", "Collaborator has been successfully added!")
+            req.flash("notice", "Collaborator has been successfully added!");
             res.redirect(`/wikis/${req.params.id}`);
           } else {
-                req.flash("notice", "Collaborator email not found.  Please try again.")
+                req.flash("notice", "Collaborator username not found.  Please try again.");
                 res.redirect(`/wikis/${req.params.id}/edit`);
             }
             })
             .catch(err => {
-                req.flash("error", "Error saving wiki.  Please try again.")
+                req.flash("error", "Error saving wiki.  Please try again.");
                 res.redirect(`/wikis/${req.params.id}/edit`);
             });
     },
