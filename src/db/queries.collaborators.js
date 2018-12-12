@@ -7,7 +7,7 @@ module.exports = {
 
     createCollaborator(req, callback) {
 
-        User.findOne({
+        User.findAll({
             where: {
                 username: req.body.collaborator
             }
@@ -16,7 +16,7 @@ module.exports = {
             if(!users[0]){
                 return callback("User does not exist.");
             }
-            Collaborator.findOne({
+            Collaborator.findAll({
                 where: {
                     userId: users[0].id,
                     wikiId: req.params.wikiId,

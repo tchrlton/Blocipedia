@@ -34,12 +34,12 @@
             <% collaborators.forEach((collaborator) => {  %>
             <li class="list-group-item">
                 <h4>
-                    <%= collaborator.User.username %>
+                    <%= JSON.stringify(collaborator) %>
                 </h4>
                 <% if(currentUser && (currentUser.role === "premium" || currentUser.role === "admin")) { %>
                 <form action="/wikis/<%= wiki.id %>/collaborators/delete" method="post">
                     <button type="submit" class="btn btn-danger">Delete</button>
-                    <input type="hidden" value="<%= collaborator.User.id %>" class="form-control" name="collaborator">
+                    <input type="hidden" value="<%= collaborator.id %>" class="form-control" name="collaborator">
                 </form>
                 <% } %>
             </li>

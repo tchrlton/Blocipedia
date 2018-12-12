@@ -66,7 +66,7 @@ module.exports = {
               wiki.title = markdown.toHTML(wiki.title);
               wiki.body = markdown.toHTML(wiki.body);
               res.render("wikis/show", {
-                  wiki: wiki.dataValues
+                  wiki
               });
           }
       });

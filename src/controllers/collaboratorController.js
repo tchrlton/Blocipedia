@@ -28,30 +28,6 @@ module.exports = {
         });
     },
 
-    collaborators(req, res, next){
-        User.findOne({where: {username: req.body.username}})
-        .then(user => {
-          if (user) {
-          let collaborator = Collaborator.build({
-          wikiId: req.params.id,
-          userId: user.id
-          });
-        
-            collaborator.save();
-        
-            req.flash("notice", "Collaborator has been successfully added!");
-            res.redirect(`/wikis/${req.params.id}`);
-          } else {
-                req.flash("notice", "Collaborator username not found.  Please try again.");
-                res.redirect(`/wikis/${req.params.id}/edit`);
-            }
-            })
-            .catch(err => {
-                req.flash("error", "Error saving wiki.  Please try again.");
-                res.redirect(`/wikis/${req.params.id}/edit`);
-            });
-    },
-
     create(req, res, next){
         collaboratorQueries.createCollaborator(req, (err, collaborator) => {
             console.log('*************CREATING COLLAB*********************');
