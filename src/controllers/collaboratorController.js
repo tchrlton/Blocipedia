@@ -16,7 +16,7 @@ module.exports = {
             } else {
                 const authorized = new Authorizer(req.user, wiki, collaborators).edit();
                 if (authorized) {
-                    res.render("/collaborators/show", {
+                    res.render("collaborators/show", {
                         wiki,
                         collaborators
                     });
@@ -26,6 +26,30 @@ module.exports = {
                 }
             }
         });
+    },
+
+    collaborators(req, res, next){
+        User.findOne({where: {email: req.body.email}})
+        .then(user => {
+          if (user) {
+          let collaborator = Collaborator.build({
+          wikiId: req.params.id,
+          userId: user.id
+          });
+        
+            collaborator.save();
+        
+            req.flash("notice", "Collaborator has been successfully added!")
+            res.redirect(`/wikis/${req.params.id}`);
+          } else {
+                req.flash("notice", "Collaborator email not found.  Please try again.")
+                res.redirect(`/wikis/${req.params.id}/edit`);
+            }
+            })
+            .catch(err => {
+                req.flash("error", "Error saving wiki.  Please try again.")
+                res.redirect(`/wikis/${req.params.id}/edit`);
+            });
     },
 
     create(req, res, next){
