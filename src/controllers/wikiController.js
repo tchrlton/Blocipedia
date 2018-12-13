@@ -5,21 +5,58 @@ const Collaborator = require('../db/models').Collaborator;
 const collaboratorQueries = require("../db/queries.collaborators.js");
 
 module.exports = {
-    index(req, res, next) {
-     wikiQueries.getAllWikis((err, wikis) => {
-        if (err) {
-            console.log(err);
+    index(req, res, next){
+      if(req.user.role === "admin"){
+        wikiQueries.getAllWikis((err, wikis) => {
+          if(err) {
+             res.redirect(500, "static/index");
+          } else {
+             res.render("wikis/index", {wikis});
+          }
+        });
+      } else if(req.user.role === "standard"){
+          wikiQueries.getPublicWikis((err, wikis) => {
+           if(err){
             res.redirect(500, "static/index");
-        } else {
-            wikis.forEach((wiki) => {
-                wiki.title = markdown.toHTML(wiki.title);
-                wiki.body = markdown.toHTML(wiki.body);
-            })
-            res.render("wikis/index", {
-                wikis
+           } else {
+            wikiQueries.getPrivateWikis((err, privatewikis) => {
+              console.log(privatewikis);
+              collaboratorQueries.getCollaboratorsforUser(req.user.id, (err, collaborators) => {
+                privatewikis.forEach( (wiki) => {
+                    if(collaborators.length != 0){
+                      for(let i = 0; i < collaborators.length; i++){
+                        console.log(collaborators);
+                        if(collaborators[i].userId === req.user.id && wiki.id === collaborators[i].wikiId){
+                            wikis.push(wiki);
+                        }
+                      }
+                    }
+  
+                })
+                res.render("wikis/index", {wikis});          
+  
+              });
+  
             });
-        }
-     })
+           }
+          });
+      } else if(req.user.role === "premium"){
+        wikiQueries.getPublicWikis((err, wikis) => {
+          if(err){
+            res.redirect(500, "static/index");
+          } else {
+              wikiQueries.getPrivateWikis((err, privatewikis) => {
+                privatewikis.forEach( (wiki) => {
+                    if(wiki.userId === req.user.id){
+                      wikis.push(wiki);
+                    }
+                })
+              res.render("wikis/index", {wikis});          
+              });
+          }
+        });
+  
+      }
     },
     new(req, res, next){
       const authorized = new Authorizer(req.user).new();

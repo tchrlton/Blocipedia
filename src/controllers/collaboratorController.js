@@ -43,9 +43,10 @@ module.exports = {
         if (req.user) {
             collaboratorQueries.deleteCollaborator(req, (err, collaborator) => {
                 if (err) {
+                    console.log(err);
                     req.flash("error", err);
                 }
-                res.redirect(req.headers.referer);
+                res.redirect(`/wikis/${req.params.wikiId}/collaborators`);
             });
         } else {
             req.flash("notice", "You must be signed in to do that!");

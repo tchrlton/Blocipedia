@@ -46,7 +46,34 @@ module.exports = {
             callback(err, null);
         })
     },
-
+    getCollaboratorforWiki(wikiId, callback){
+        return Collaborator.findAll({
+          where: {
+            wikiId: wikiId
+          }
+        })
+        .then((collaborators) => {
+          callback(null, collaborators);
+        })
+        .catch((err) => {
+          console.log(err);
+          callback(err);
+        });
+    },
+    getCollaboratorsforUser(userId, callback){
+        return Collaborator.findAll({
+          where: {
+            userId: userId
+          }
+        })
+        .then((collaborators) => {
+          callback(null, collaborators);
+        })
+        .catch((err) => {
+          console.log(err);
+          callback(err);
+        });
+    },
     deleteCollaborator(req, callback) {
         let userId = req.body.collaborator;
         let wikiId = req.params.wikiId;
