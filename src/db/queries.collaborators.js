@@ -78,9 +78,10 @@ module.exports = {
         let userId = req.body.collaborator;
         let wikiId = req.params.wikiId;
 
-        const authorized = new Authorizer(req.user, wikiId, userId).destroy();
+        const authorized = new Authorizer(req.user, wiki).destroy();
 
         if (authorized) {
+            console.log("I am authorized!");
             Collaborator.destroy({
                     where: {
                         userId: userId,
@@ -89,12 +90,15 @@ module.exports = {
                 })
                 .then((deletedRecordsCount) => {
                     callback(null, deletedRecordsCount);
+                    console.log("success for deleted record count");
                 })
                 .catch((err) => {
                     callback(err);
                 });
+                console.log("collaborator destroyed");
         } else {
             req.flash("notice", "You are not authorized to do that.");
+            console.log("not authorized");
             callback(401);
         }
     },

@@ -50,7 +50,7 @@ module.exports = class WikiPolicy {
   }
 
   destroy() {
-    return this._isAdmin() || this._isOwner();
+    return this._isAdmin() || (this._isOwner() && this._isPremium());
   }
 
   makePrivate() {

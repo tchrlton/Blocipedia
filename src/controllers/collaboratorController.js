@@ -33,7 +33,7 @@ module.exports = {
             console.log('*************CREATING COLLAB*********************');
             if (err) {
                 console.log(err);
-                req.flash("notice", "User already exists.");
+                req.flash("notice", "User already exists or does not exist at all.");
             }
             res.redirect(`/wikis/${req.params.wikiId}/collaborators`);
         });
@@ -43,9 +43,10 @@ module.exports = {
         if (req.user) {
             collaboratorQueries.deleteCollaborator(req, (err, collaborator) => {
                 if (err) {
-                    console.log(err);
                     req.flash("error", err);
+                    console.log(err);
                 }
+                console.log("success deleting");
                 res.redirect(`/wikis/${req.params.wikiId}/collaborators`);
             });
         } else {

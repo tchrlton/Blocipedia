@@ -37,9 +37,9 @@ module.exports = {
       callback(err);
     })
   },
-  getUserByUsername(userUsername, callback){
+  getUserByEmail(userEmail, callback){
     return User.findAll({
-      where: {username: userUsername}
+      where: {email: userEmail}
     })
     .then((user) => {
       callback(null, user);
