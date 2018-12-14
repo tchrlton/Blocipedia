@@ -18,7 +18,7 @@ module.exports = {
                 const authorized = new Authorizer(req.user, wiki, collaborators).edit();
                 if (authorized) {
                     res.render("collaborators/show", {
-                        wiki,
+                        user,
                         collaborators
                     });
                 } else {

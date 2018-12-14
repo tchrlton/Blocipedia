@@ -1,6 +1,7 @@
 const User = require("./models").User;
 const bcrypt = require("bcryptjs");
 const sgMail = require('@sendgrid/mail');
+const Collaborator = require("../db/models").Collaborator;
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 

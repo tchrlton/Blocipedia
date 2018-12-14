@@ -84,7 +84,7 @@ module.exports = {
             console.log("I am authorized!");
             Collaborator.destroy({
                     where: {
-                        userId: userId,
+                        id: userId,
                         wikiId: wikiId
                     }
                 })
