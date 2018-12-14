@@ -7,7 +7,7 @@ const userQueries = require("../db/queries.users");
 
 module.exports = {
 
-    show(req, res, next) {
+    show(req, res, next){
         wikiQueries.getWikis(req.params.wikiId, (err, result) => {
             wiki = result["wiki"];
             collaborators = result["collaborators"];
@@ -18,11 +18,11 @@ module.exports = {
                 const authorized = new Authorizer(req.user, wiki, collaborators).edit();
                 if (authorized) {
                     res.render("collaborators/show", {
-                        user,
+                        wiki,
                         collaborators
                     });
                 } else {
-                    req.flash("notice", "You are not authorized to do that");
+                    req.flash("notice", "You are not authorized to do that!");
                     res.redirect(`/wikis/${req.params.wikiId}`);
                 }
             }

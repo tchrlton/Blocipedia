@@ -34,7 +34,7 @@
             <% collaborators.forEach((collaborator) => {  %>
             <li class="list-group-item">
                 <h4>
-                    <%= JSON.stringify(collaborator) %>
+                    <%= JSON.stringify(collaborator.userId) %>
                 </h4>
                 <% if(currentUser && (currentUser.role === "premium" || currentUser.role === "admin")) { %>
                 <form action="/wikis/<%= wiki.id %>/collaborators/delete" method="post">

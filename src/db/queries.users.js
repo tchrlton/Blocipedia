@@ -29,15 +29,27 @@ module.exports = {
       callback(err);
     })
   },
-  getUser(id, callback){
-    return User.findById(id)
-    .then((user) => {
-      callback(null, user);
-    })
-    .catch((err) => {
-      callback(err);
-    })
-  },
+  getUser(id, callback) {
+    let result = {};
+    User.findById(id)
+        .then((user) => {
+            if (!user) {
+                callback(404);
+            } else {
+                result["user"] = user;
+                Collaborator.scope({
+                        method: ["userCollaborationsFor", id]
+                    }).all()
+                    .then((collaborations) => {
+                        result["collaborations"] = collaborations;
+                        callback(null, result);
+                    })
+                    .catch((err) => {
+                        callback(err);
+                    })
+            }
+        })
+},
   getUserByCollaborator(collaboratorId, callback){ 
     return Collaborator.findAll({ 
       where: {id: collaboratorId} 
