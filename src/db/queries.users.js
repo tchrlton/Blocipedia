@@ -37,17 +37,25 @@ module.exports = {
       callback(err);
     })
   },
-  getUserByEmail(userEmail, callback){
-    return User.findAll({
-      where: {email: userEmail}
-    })
-    .then((user) => {
-      callback(null, user);
-    })
-    .catch((err) => {
-      callback(err);
-    })
-  },
+  getUserByCollaborator(collaboratorId, callback){ 
+    return Collaborator.findAll({ 
+      where: {id: collaboratorId} 
+    }) 
+    .then((collaborator) => { 
+      return User.findAll({ 
+        where: {id: collaborator.userId} 
+      }) 
+      .then((user) => {
+        callback(null, user);
+      })
+      .catch((err) => { 
+        callback(err); 
+      }) 
+    }) 
+    .catch((err) => { 
+      callback(err); 
+    }) 
+  }, 
   upgradeUser(id, callback){
     return User.findById(id)
     .then((user) => {

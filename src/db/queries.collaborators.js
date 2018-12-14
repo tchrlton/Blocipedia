@@ -90,12 +90,14 @@ module.exports = {
                 })
                 .then((deletedRecordsCount) => {
                     callback(null, deletedRecordsCount);
-                    console.log("success for deleted record count");
+                    console.log(deletedRecordsCount);
                 })
                 .catch((err) => {
+                    console.log(err);
                     callback(err);
                 });
-                console.log("collaborator destroyed");
+                console.log(userId);
+                console.log(wikiId);
         } else {
             req.flash("notice", "You are not authorized to do that.");
             console.log("not authorized");

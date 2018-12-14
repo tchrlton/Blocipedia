@@ -3,6 +3,7 @@ const User = require("../db/models").User;
 const Wiki = require("../db/models").Wiki;
 const Authorizer = require("../policies/wiki");
 const wikiQueries = require("../db/queries.wikis");
+const userQueries = require("../db/queries.users");
 
 module.exports = {
 
@@ -41,18 +42,27 @@ module.exports = {
 
     delete(req, res, next){
         if (req.user) {
-            collaboratorQueries.deleteCollaborator(req, (err, collaborator) => {
-                if (err) {
-                    req.flash("error", err);
+            let collaboratorId = req.body.collaboratorId;
+            userQueries.getUserByCollaborator(collaboratorId, (err, user) => {
+                if(err){
                     console.log(err);
+                    req.flash("error", err);
+                    res.redirect("/");
+                } else {
+                    collaboratorQueries.deleteCollaborator(req, (err, collaborator) => {
+                        if (err) {
+                            req.flash("error", err);
+                            console.log(err);
+                        }
+                        console.log("success deleting");
+                        res.redirect(`/wikis/${req.params.wikiId}/collaborators`);
+                    });
                 }
-                console.log("success deleting");
-                res.redirect(`/wikis/${req.params.wikiId}/collaborators`);
             });
         } else {
             req.flash("notice", "You must be signed in to do that!");
             res.redirect(req.headers.referer);
         }
-    },
+    }
 
 }
