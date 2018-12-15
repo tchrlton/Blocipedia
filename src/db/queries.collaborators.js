@@ -60,19 +60,27 @@ module.exports = {
           callback(err);
         });
     },
-    getCollaboratorsforUser(userId, callback){
-        return Collaborator.findAll({
-          where: {
-            userId: userId
-          }
-        })
-        .then((collaborators) => {
-          callback(null, collaborators);
-        })
-        .catch((err) => {
-          console.log(err);
-          callback(err);
-        });
+    getUsers(id, callback) {
+        let result = {};
+        User.findById(id)
+            .then((user) => {
+                console.log(user);
+              if (!user) {
+                  callback(404);
+              } else {
+                result["user"] = user;
+                Collaborator.scope({
+                  method: ["userCollaborationsFor", id]
+                }).all()
+                .then((collaborators) => {
+                    result["collaborators"] = collaborators;
+                    callback(null, result);
+                })
+                .catch((err) => {
+                   callback(err);
+                })
+              }
+            })
     },
     deleteCollaborator(req, callback) {
         let userId = req.body.collaborator;

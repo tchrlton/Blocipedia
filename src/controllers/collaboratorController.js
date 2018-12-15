@@ -17,9 +17,14 @@ module.exports = {
             } else {
                 const authorized = new Authorizer(req.user, wiki, collaborators).edit();
                 if (authorized) {
-                    res.render("collaborators/show", {
+                    collaboratorQueries.getUsers(collaborators.userId, (err, result) => {
+                        user = result["user"];
+
+                        res.render("collaborators/show", {
+                        user,
                         wiki,
                         collaborators
+                        });
                     });
                 } else {
                     req.flash("notice", "You are not authorized to do that!");
