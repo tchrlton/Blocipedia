@@ -60,9 +60,11 @@ module.exports = {
           callback(err);
         });
     },
-    getUsers(id, callback) {
+    getUser(collaboratorUserId, callback) {
         let result = {};
-        User.findById(id)
+        User.findAll({
+            where: {id : collaboratorUserId}
+        })
             .then((user) => {
                 console.log(user);
               if (!user) {
@@ -70,13 +72,14 @@ module.exports = {
               } else {
                 result["user"] = user;
                 Collaborator.scope({
-                  method: ["userCollaborationsFor", id]
+                  method: ["userCollaborationsFor", collaboratorUserId]
                 }).all()
                 .then((collaborators) => {
                     result["collaborators"] = collaborators;
                     callback(null, result);
                 })
                 .catch((err) => {
+                    console.log(err);
                    callback(err);
                 })
               }
