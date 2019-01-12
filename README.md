@@ -1,6 +1,6 @@
 # Fitpedia
 
-Wiki-style application with premium paid accounts where fitness enthusiasts can collaborate over favorite climbing destinations.
+Wiki-style application with premium paid accounts where fitness enthusiasts can collaborate over their favorite fitness routines.
 
 visit: https://fitpedia.herokuapp.com/ to checkout the app in production!
 
